@@ -14,12 +14,16 @@ class Notify {
         boxType: 'warn',
       });
     });
+    this.specialOffer = false;
     this.hasSync = false;
     self.port.on('syncEnabled', () => {
       this.hasSync = true;
     });
     self.port.on('syncDisabled', () => {
       this.hasSync = false;
+    });
+    self.port.on('newFeatureSyncOffer', () => {
+      this.specialOffer = true;
     });
   }
 
@@ -118,11 +122,7 @@ class Notify {
           <p>
             You've just taken a step towards staying safe online.
           </p>
-          <p>
-            Protect yourself further with Firefox Sync for your passwords
-            and you will be informed each time one of your accounts might
-            be at risk.
-          </p>
+          ${this.createSyncOffer()}
         </div>
         ${this.createSignupFooter()}
       </div>
@@ -140,14 +140,30 @@ class Notify {
           <p>
             You dodged the bullet with not having an account here.
           </p>
-          <p>
-            Protect yourself with Firefox Sync for your passwords
-            and you will be informed each time one of your accounts might
-            be at risk.
-          </p>
+          ${this.createSyncOffer()}
         </div>
         ${this.createSignupFooter()}
       </div>
+    `;
+  }
+
+  createSyncOffer() {
+    if (this.specialOffer) {
+      return yo`
+        <p>
+          Protect yourself further with Firefox Sync for your passwords
+          and you will be informed each time one of your accounts might
+          be at risk.
+          Protect yourself further with Firefox Sync for your passwords. All your
+          passwords, synced safely on all of your devices.
+        </p>
+      `;
+    }
+    return yo`
+      <p>
+        Protect yourself further with Firefox Sync for your passwords. All your
+        passwords, synced safely on all of your devices.
+      </p>
     `;
   }
 
